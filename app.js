@@ -36,15 +36,15 @@ const geoData = [
 
 const DEFAULT_USERS = {
     "honza": "mapa123",
-    "petr": "kopka",
-    "jana": "geodez",
-    "martin": "svět",
-    "lenka": "hory",
-    "lukas": "ostrov",
-    "adela": "reka",
-    "pavel": "pole",
-    "ivana": "město",
-    "david": "sopka"
+    "Tondaboi": "regin",
+    "Fíša": "geodez",
+    "Olík": "svět",
+    "Eda": "hory",
+    "Matululu": "ostrov",
+    "adela": "reginova",
+    "Kikin": "pole",
+    "user": "město",
+    "user2": "sopka"
 };
 
 class GeoGame {
