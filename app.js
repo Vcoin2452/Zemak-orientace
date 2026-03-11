@@ -37,9 +37,6 @@ const geoData = [
 const DEFAULT_USERS = {
     "honza": "mapa123",
     "Tondaboi": "regin",
-    "Fíša": "geodez",
-    "Olík": "svět",
-    "Eda": "hory",
     "Matululu": "ostrov",
     "adela": "reginova",
     "Kikin": "pole",
