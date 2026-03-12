@@ -28,12 +28,18 @@
                             <span class="slider"></span>
                         </label>
                         <label class="switch-item">
+                            <span>Světlý mód</span>
+                            <input type="checkbox" id="toggle-light-cb">
+                            <span class="slider"></span>
+                        </label>
+                        <label class="switch-item">
                             <span>Zobrazit vše</span>
                             <input type="checkbox" id="toggle-all-cb">
                             <span class="slider"></span>
                         </label>
                     </div>
                 </div>
+                <button id="show-terms" class="secondary-btn">Seznam pojmů</button>
                 <div class="game-stats">
                     <div class="stat-item">Skóre: <span id="score">0</span></div>
                     <div class="stat-item">Kolo: <span id="total-questions">0</span></div>
@@ -70,6 +76,16 @@
             <div id="identify-options" class="hidden glass">
                 <h3>Co je to za místo?</h3>
                 <div id="options-container"></div>
+            </div>
+
+            <div id="terms-overlay" class="hidden glass">
+                <div class="modal-header">
+                    <h2>Seznam všech pojmů</h2>
+                    <button id="close-terms" class="close-btn">&times;</button>
+                </div>
+                <div id="terms-content">
+                    <!-- Categories and terms will be injected here -->
+                </div>
             </div>
         </main>
 

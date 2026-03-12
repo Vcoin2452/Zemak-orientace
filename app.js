@@ -1,11 +1,23 @@
 const geoData = [
     // Mountains (Pohoří)
-    { name: "Himálaj", type: "Pohoří", coords: [27.9881, 86.9250] },
+    { 
+        name: "Himálaj", type: "Pohoří", coords: [27.9881, 86.9250],
+        shape: [[30, 70], [35, 75], [36, 80], [35, 85], [32, 95], [28, 100], [25, 95], [26, 85], [27, 75], [30, 70]] 
+    },
     { name: "Karakoram", type: "Pohoří", coords: [35.8814, 76.5133] },
     { name: "Ural", type: "Pohoří", coords: [60.0000, 60.0000] },
-    { name: "Alpy", type: "Pohoří", coords: [47.3687, 8.5391] },
-    { name: "Andy", type: "Pohoří", coords: [-32.6532, -70.0109] },
-    { name: "Skalisté hory", type: "Pohoří", coords: [44.4280, -110.5885] },
+    { 
+        name: "Alpy", type: "Pohoří", coords: [47.3687, 8.5391],
+        shape: [[44, 5], [46, 6], [48, 8], [48, 12], [47, 15], [46, 16], [45, 14], [44, 10], [44, 5]]
+    },
+    { 
+        name: "Andy", type: "Pohoří", coords: [-32.6532, -70.0109],
+        shape: [[10, -75], [0, -78], [-15, -70], [-30, -70], [-55, -72], [-55, -68], [-30, -65], [-15, -65], [0, -73], [10, -75]]
+    },
+    { 
+        name: "Skalisté hory", type: "Pohoří", coords: [44.4280, -110.5885],
+        shape: [[60, -120], [50, -115], [40, -105], [35, -105], [35, -110], [40, -110], [50, -120], [60, -120]]
+    },
     { name: "Atlas", type: "Pohoří", coords: [31.0600, -7.9500] },
     { name: "Kavkaz", type: "Pohoří", coords: [43.3499, 42.4453] },
     { name: "Hindúkuš", type: "Pohoří", coords: [35.0000, 71.0000] },
@@ -18,9 +30,15 @@ const geoData = [
     { name: "Tibesti", type: "Pohoří", coords: [20.0000, 18.0000] },
     { name: "Etiopská vysočina", type: "Pohoří", coords: [9.0000, 39.0000] },
     { name: "Skandinávské pohoří", type: "Pohoří", coords: [65.0000, 14.0000] },
-    { name: "Pyreneje", type: "Pohoří", coords: [42.6700, 1.0000] },
+    { 
+        name: "Pyreneje", type: "Pohoří", coords: [42.6700, 1.0000],
+        shape: [[43.5, -2], [42.5, 3], [42, 3], [42.5, -2], [43.5, -2]]
+    },
     { name: "Apeniny", type: "Pohoří", coords: [43.0000, 13.0000] },
-    { name: "Karpaty", type: "Pohoří", coords: [47.0000, 25.0000] },
+    { 
+        name: "Karpaty", type: "Pohoří", coords: [47.0000, 25.0000],
+        shape: [[50, 20], [49, 25], [47, 27], [45, 25], [45, 23], [47, 21], [50, 20]]
+    },
     { name: "Dinárské hory", type: "Pohoří", coords: [43.0000, 18.0000] },
     { name: "Balkán", type: "Pohoří", coords: [43.2000, 25.0000] },
     { name: "Sierra Nevada (Španělsko)", type: "Pohoří", coords: [37.0500, -3.3000] },
@@ -48,8 +66,14 @@ const geoData = [
     { name: "Mauna Kea", type: "Sopky", coords: [19.8206, -155.4681] },
 
     // Peninsulas (Poloostrovy)
-    { name: "Skandinávský poloostrov", type: "Poloostrovy", coords: [63.0000, 15.0000] },
-    { name: "Arabský poloostrov", type: "Poloostrovy", coords: [23.1211, 46.4025] },
+    { 
+        name: "Skandinávský poloostrov", type: "Poloostrovy", coords: [63.0000, 15.0000],
+        shape: [[58, 5], [71, 20], [70, 30], [60, 20], [55, 12], [58, 5]]
+    },
+    { 
+        name: "Arabský poloostrov", type: "Poloostrovy", coords: [23.1211, 46.4025],
+        shape: [[30, 35], [30, 50], [25, 60], [15, 55], [12, 45], [20, 35], [30, 35]]
+    },
     { name: "Kamčatka", type: "Poloostrovy", coords: [56.0000, 159.0000] },
     { name: "Florida", type: "Poloostrovy", coords: [27.6648, -81.5158] },
     { name: "Somálský poloostrov", type: "Poloostrovy", coords: [9.0000, 49.0000] },
@@ -69,15 +93,24 @@ const geoData = [
     { name: "Bretaňský poloostrov", type: "Poloostrovy", coords: [48.0000, -3.0000] },
     { name: "Malá Asie (Anatolie)", type: "Poloostrovy", coords: [39.0000, 33.0000] },
     { name: "Sinajský poloostrov", type: "Poloostrovy", coords: [29.5000, 33.8000] },
-    { name: "Přední Indie", type: "Poloostrovy", coords: [20.0000, 78.0000] },
-    { name: "Zadní Indie", type: "Poloostrovy", coords: [15.0000, 102.0000] },
+    { 
+        name: "Přední Indie", type: "Poloostrovy", coords: [20.0000, 78.0000],
+        shape: [[25, 70], [25, 85], [10, 80], [8, 77], [25, 70]]
+    },
+    { 
+        name: "Zadní Indie", type: "Poloostrovy", coords: [15.0000, 102.0000],
+        shape: [[20, 95], [20, 110], [10, 105], [5, 100], [20, 95]]
+    },
     { name: "Tajmyr", type: "Poloostrovy", coords: [74.0000, 100.0000] },
     { name: "Jamal", type: "Poloostrovy", coords: [70.0000, 70.0000] },
     { name: "Korejský poloostrov", type: "Poloostrovy", coords: [37.5000, 127.0000] },
     { name: "Čukotský poloostrov", type: "Poloostrovy", coords: [66.0000, -172.0000] },
 
     // Islands (Ostrovy)
-    { name: "Grónsko", type: "Ostrovy", coords: [72.0000, -40.0000] },
+    { 
+        name: "Grónsko", type: "Ostrovy", coords: [72.0000, -40.0000],
+        shape: [[60, -45], [70, -60], [83, -40], [80, -20], [70, -20], [60, -45]]
+    },
     { name: "Madagaskar", type: "Ostrovy", coords: [-18.7669, 46.8691] },
     { name: "Island", type: "Ostrovy", coords: [64.9631, -19.0208] },
     { name: "Nová Guinea", type: "Ostrovy", coords: [-5.0000, 140.0000] },
@@ -121,7 +154,10 @@ const geoData = [
     { name: "Bahamy", type: "Ostrovy", coords: [24.2500, -76.0000] },
 
     // Deserts and Basins (Pouště a pánve)
-    { name: "Sahara", type: "Pouště", coords: [23.4162, 25.6628] },
+    { 
+        name: "Sahara", type: "Pouště", coords: [23.4162, 25.6628],
+        shape: [[30, -10], [30, 35], [15, 35], [15, -10], [30, -10]]
+    },
     { name: "Gobi", type: "Pouště", coords: [42.5000, 103.5000] },
     { name: "Atacama", type: "Pouště", coords: [-23.5000, -69.6000] },
     { name: "Kalahari", type: "Pouště", coords: [-23.0000, 23.0000] },
@@ -137,7 +173,10 @@ const geoData = [
     { name: "Sečuánská pánev", type: "Pouště", coords: [30.5000, 105.5000] },
 
     // Lowlands (Nížiny)
-    { name: "Východoevropská nížina", type: "Nížiny", coords: [55.0000, 40.0000] },
+    { 
+        name: "Východoevropská nížina", type: "Nížiny", coords: [55.0000, 40.0000],
+        shape: [[50, 25], [65, 30], [65, 60], [50, 50], [45, 40], [50, 25]]
+    },
     { name: "Západosibiřská nížina", type: "Nížiny", coords: [60.0000, 75.0000] },
     { name: "Mezopotámská nížina", type: "Nížiny", coords: [32.0000, 45.0000] },
     { name: "Indoganžská nížina", type: "Nížiny", coords: [27.0000, 80.0000] },
@@ -148,7 +187,10 @@ const geoData = [
     { name: "Atlantská nížina", type: "Nížiny", coords: [35.0000, -77.0000] },
     { name: "Mississippská (Pobřežní) nížina", type: "Nížiny", coords: [32.0000, -90.0000] },
     { name: "Arktická nížina", type: "Nížiny", coords: [70.0000, -150.0000] },
-    { name: "Amazonská nížina", type: "Nížiny", coords: [-3.0000, -60.0000] },
+    { 
+        name: "Amazonská nížina", type: "Nížiny", coords: [-3.0000, -60.0000],
+        shape: [[5, -70], [5, -50], [-10, -50], [-15, -60], [-10, -75], [5, -70]]
+    },
     { name: "Orinocká nížina", type: "Nížiny", coords: [7.0000, -67.0000] },
     { name: "Laplatská nížina", type: "Nížiny", coords: [-25.0000, -58.0000] }
 ];
@@ -163,11 +205,13 @@ class GeoGame {
         this.score = 0;
         this.questionsCount = 0;
         this.currentTarget = null;
+        this.activeShape = null; // New: tracking polygon shapes
         this.marker = null;
         this.allMarkersGroup = null;
         this.showingAll = false;
         this.lastTargets = [];
         this.currentUser = localStorage.getItem('geoCurrentUserName') || 'Hráč';
+        this.lightMode = localStorage.getItem('geoLightMode') === 'true';
 
         this.initApp();
     }
@@ -183,6 +227,11 @@ class GeoGame {
         document.getElementById('current-user').textContent = this.currentUser;
         document.getElementById('current-user').style.cursor = 'pointer';
         document.getElementById('current-user').addEventListener('click', () => this.changeNickname());
+
+        if (this.lightMode) {
+            document.body.classList.add('light-theme');
+            document.getElementById('toggle-light-cb').checked = true;
+        }
     }
 
     changeNickname() {
@@ -202,8 +251,14 @@ class GeoGame {
             attributionControl: false
         });
 
-        this.baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(this.map);
-        this.blindLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', { maxZoom: 19 });
+        this.layers = {
+            dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }),
+            darkBlind: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', { maxZoom: 19 }),
+            light: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19 }),
+            lightBlind: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', { maxZoom: 19 })
+        };
+
+        this.updateMapLayer();
 
         L.control.zoom({ position: 'bottomright' }).addTo(this.map);
         this.map.on('click', (e) => this.handleMapClick(e));
@@ -232,6 +287,7 @@ class GeoGame {
         });
 
         document.getElementById('toggle-blind-cb').addEventListener('change', (e) => this.toggleBlindMap(e.target.checked));
+        document.getElementById('toggle-light-cb').addEventListener('change', (e) => this.toggleLightMode(e.target.checked));
         document.getElementById('toggle-all-cb').addEventListener('change', (e) => this.toggleAllMarkers(e.target.checked));
 
         document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -242,17 +298,72 @@ class GeoGame {
                 this.resetGame();
             });
         });
+
+        document.getElementById('show-terms').addEventListener('click', () => this.showTermsList());
+        document.getElementById('close-terms').addEventListener('click', () => this.hideTermsList());
+        document.getElementById('terms-overlay').addEventListener('click', (e) => {
+            if (e.target.id === 'terms-overlay') this.hideTermsList();
+        });
+    }
+
+    showTermsList() {
+        const categories = {};
+        geoData.forEach(item => {
+            if (!categories[item.type]) categories[item.type] = [];
+            categories[item.type].push(item.name);
+        });
+
+        const content = document.getElementById('terms-content');
+        content.innerHTML = '';
+
+        Object.keys(categories).sort().forEach(cat => {
+            const div = document.createElement('div');
+            div.className = 'term-category';
+            div.innerHTML = `
+                <h3>${cat}</h3>
+                <div class="term-grid">
+                    ${categories[cat].sort((a, b) => a.localeCompare(b, 'cs')).map(term => `<div class="term-item">${term}</div>`).join('')}
+                </div>
+            `;
+            content.appendChild(div);
+        });
+
+        document.getElementById('terms-overlay').classList.remove('hidden');
+    }
+
+    hideTermsList() {
+        document.getElementById('terms-overlay').classList.add('hidden');
     }
 
     toggleBlindMap(active) {
         this.blindMode = active;
-        if (this.blindMode) {
-            this.map.removeLayer(this.baseLayer);
-            this.blindLayer.addTo(this.map);
+        this.updateMapLayer();
+    }
+
+    toggleLightMode(active) {
+        this.lightMode = active;
+        localStorage.setItem('geoLightMode', active);
+        if (active) document.body.classList.add('light-theme');
+        else document.body.classList.remove('light-theme');
+        this.updateMapLayer();
+    }
+
+    updateMapLayer() {
+        // Remove all layers first
+        Object.values(this.layers).forEach(layer => this.map.removeLayer(layer));
+
+        let currentLayer;
+        if (this.lightMode) {
+            currentLayer = this.blindMode ? this.layers.lightBlind : this.layers.light;
+        } else {
+            currentLayer = this.blindMode ? this.layers.darkBlind : this.layers.dark;
+        }
+
+        currentLayer.addTo(this.map);
+        
+        if (this.blindMode && !this.lightMode) {
             document.body.classList.add('blind-mode');
         } else {
-            this.map.removeLayer(this.blindLayer);
-            this.baseLayer.addTo(this.map);
             document.body.classList.remove('blind-mode');
         }
     }
@@ -262,9 +373,15 @@ class GeoGame {
         if (this.showingAll) {
             this.allMarkersGroup.clearLayers();
             geoData.forEach(item => {
-                const marker = L.circleMarker(item.coords, { radius: 5, color: '#00d2ff', fillOpacity: 0.8 });
-                marker.bindTooltip(item.name, { permanent: true, direction: 'right', className: 'marker-label' });
-                this.allMarkersGroup.addLayer(marker);
+                if (item.shape) {
+                    const poly = L.polygon(item.shape, { color: '#00d2ff', fillOpacity: 0.3, weight: 2 });
+                    poly.bindTooltip(item.name, { permanent: true, direction: 'center', className: 'marker-label' });
+                    this.allMarkersGroup.addLayer(poly);
+                } else {
+                    const marker = L.circleMarker(item.coords, { radius: 5, color: '#00d2ff', fillOpacity: 0.8 });
+                    marker.bindTooltip(item.name, { permanent: true, direction: 'right', className: 'marker-label' });
+                    this.allMarkersGroup.addLayer(marker);
+                }
             });
             this.allMarkersGroup.addTo(this.map);
         } else {
@@ -280,6 +397,8 @@ class GeoGame {
     resetGame() {
         this.score = 0; this.questionsCount = 0; this.currentTarget = null;
         if (this.marker) this.map.removeLayer(this.marker);
+        if (this.activeShape) this.map.removeLayer(this.activeShape);
+        this.activeShape = null;
         this.updateStats();
         document.getElementById('start-game').classList.remove('hidden');
         document.getElementById('identify-options').classList.add('hidden');
@@ -300,6 +419,9 @@ class GeoGame {
         document.getElementById('type-in-container').classList.add('hidden');
         document.getElementById('question-panel').classList.remove('hidden');
         if (this.marker) this.map.removeLayer(this.marker);
+        if (this.activeShape) this.map.removeLayer(this.activeShape);
+        this.activeShape = null;
+
         if (this.currentMode === 'find') {
             document.getElementById('question-text').textContent = `Najdi: ${this.currentTarget.name}`;
             document.getElementById('sub-text').textContent = `Typ: ${this.currentTarget.type}`;
@@ -309,8 +431,13 @@ class GeoGame {
 
     setupIdentifyMode() {
         document.getElementById('question-text').textContent = "Co je to?";
-        this.marker = L.marker(this.currentTarget.coords).addTo(this.map);
-        this.map.panTo(this.currentTarget.coords);
+        if (this.currentTarget.shape) {
+            this.activeShape = L.polygon(this.currentTarget.shape, { color: '#00d2ff', fillOpacity: 0.5 }).addTo(this.map);
+            this.map.fitBounds(this.activeShape.getBounds());
+        } else {
+            this.marker = L.marker(this.currentTarget.coords).addTo(this.map);
+            this.map.panTo(this.currentTarget.coords);
+        }
         const options = this.generateOptions(this.currentTarget);
         const container = document.getElementById('options-container');
         container.innerHTML = '';
@@ -325,8 +452,13 @@ class GeoGame {
 
     setupTypeinMode() {
         document.getElementById('question-text').textContent = "Napiš název";
-        this.marker = L.marker(this.currentTarget.coords).addTo(this.map);
-        this.map.panTo(this.currentTarget.coords);
+        if (this.currentTarget.shape) {
+            this.activeShape = L.polygon(this.currentTarget.shape, { color: '#00d2ff', fillOpacity: 0.5 }).addTo(this.map);
+            this.map.fitBounds(this.activeShape.getBounds());
+        } else {
+            this.marker = L.marker(this.currentTarget.coords).addTo(this.map);
+            this.map.panTo(this.currentTarget.coords);
+        }
         const input = document.getElementById('name-input');
         input.value = '';
         document.getElementById('type-in-container').classList.remove('hidden');
@@ -352,17 +484,47 @@ class GeoGame {
     handleMapClick(e) {
         if (this.currentMode !== 'find' || !this.currentTarget) return;
         const { lat, lng } = e.latlng;
-        const [targetLat, targetLng] = this.currentTarget.coords;
-        const threshold = 12 / Math.pow(1.5, this.map.getZoom());
-        const dist = Math.sqrt(Math.pow(lat - targetLat, 2) + Math.pow(lng - targetLng, 2));
-        if (dist < threshold) {
+        let isCorrect = false;
+
+        if (this.currentTarget.shape) {
+            isCorrect = this.pointInPolygon([lat, lng], this.currentTarget.shape);
+        } else {
+            const [targetLat, targetLng] = this.currentTarget.coords;
+            const threshold = 12 / Math.pow(1.5, this.map.getZoom());
+            const dist = Math.sqrt(Math.pow(lat - targetLat, 2) + Math.pow(lng - targetLng, 2));
+            isCorrect = dist < threshold;
+        }
+
+        if (isCorrect) {
             this.handleCorrect();
-            this.marker = L.circleMarker(this.currentTarget.coords, { color: '#10b981', radius: 10 }).addTo(this.map);
+            if (this.currentTarget.shape) {
+                this.activeShape = L.polygon(this.currentTarget.shape, { color: '#10b981', fillOpacity: 0.6 }).addTo(this.map);
+            } else {
+                this.marker = L.circleMarker(this.currentTarget.coords, { color: '#10b981', radius: 10 }).addTo(this.map);
+            }
         } else {
             this.handleWrong();
-            this.marker = L.circleMarker(this.currentTarget.coords, { color: '#f43f5e', radius: 10 }).addTo(this.map);
+            if (this.currentTarget.shape) {
+                this.activeShape = L.polygon(this.currentTarget.shape, { color: '#f43f5e', fillOpacity: 0.6 }).addTo(this.map);
+            } else {
+                this.marker = L.circleMarker(this.currentTarget.coords, { color: '#f43f5e', radius: 10 }).addTo(this.map);
+            }
         }
         setTimeout(() => this.nextQuestion(), 1500);
+    }
+
+    // Ray-casting algorithm for point-in-polygon
+    pointInPolygon(point, vs) {
+        const x = point[0], y = point[1];
+        let inside = false;
+        for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+            const xi = vs[i][0], yi = vs[i][1];
+            const xj = vs[j][0], yj = vs[j][1];
+            const intersect = ((yi > y) !== (yj > y))
+                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+        return inside;
     }
 
     checkIdentifyAnswer(selected) {
