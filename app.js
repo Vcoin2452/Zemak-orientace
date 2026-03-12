@@ -224,9 +224,18 @@ class GeoGame {
     }
 
     initUI() {
-        document.getElementById('current-user').textContent = this.currentUser;
-        document.getElementById('current-user').style.cursor = 'pointer';
-        document.getElementById('current-user').addEventListener('click', () => this.changeNickname());
+        const userBtn = document.getElementById('current-user');
+        userBtn.textContent = this.currentUser;
+        userBtn.style.cursor = 'pointer';
+        
+        const changeName = () => this.changeNickname();
+        userBtn.addEventListener('click', changeName);
+        userBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                changeName();
+            }
+        });
 
         if (this.lightMode) {
             document.body.classList.add('light-theme');
@@ -277,12 +286,18 @@ class GeoGame {
         
         optionsBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            optionsMenu.classList.toggle('hidden');
+            const isHidden = optionsMenu.classList.toggle('hidden');
+            optionsBtn.setAttribute('aria-expanded', !isHidden);
+            if (!isHidden) {
+                // Focus the first item in the menu
+                optionsMenu.querySelector('input')?.focus();
+            }
         });
 
         document.addEventListener('click', (e) => {
             if (!optionsMenu.contains(e.target) && e.target !== optionsBtn) {
                 optionsMenu.classList.add('hidden');
+                optionsBtn.setAttribute('aria-expanded', 'false');
             }
         });
 
@@ -329,10 +344,12 @@ class GeoGame {
         });
 
         document.getElementById('terms-overlay').classList.remove('hidden');
+        document.getElementById('close-terms').focus();
     }
 
     hideTermsList() {
         document.getElementById('terms-overlay').classList.add('hidden');
+        document.getElementById('show-terms').focus();
     }
 
     toggleBlindMap(active) {
@@ -462,7 +479,11 @@ class GeoGame {
         const input = document.getElementById('name-input');
         input.value = '';
         document.getElementById('type-in-container').classList.remove('hidden');
-        setTimeout(() => input.focus(), 100);
+        setTimeout(() => {
+            input.focus();
+            // Announce to screen reader
+            this.showFeedback("Napiš název místa", "correct"); 
+        }, 100);
     }
 
     checkTypeinAnswer() {

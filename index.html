@@ -18,30 +18,30 @@
         <header>
             <div class="logo">GEO<span>MASTER</span></div>
             <div class="header-actions">
-                <div id="user-info">Hráč: <span id="current-user">Host</span></div>
+                <div id="user-info">Hráč: <span id="current-user" role="button" aria-label="Změnit přezdívku" tabindex="0">Host</span></div>
                 <div class="dropdown">
-                    <button id="options-btn" class="secondary-btn">Možnosti ▾</button>
-                    <div id="options-menu" class="dropdown-content glass hidden">
+                    <button id="options-btn" class="secondary-btn" aria-haspopup="true" aria-expanded="false">Možnosti ▾</button>
+                    <div id="options-menu" class="dropdown-content glass hidden" role="menu">
                         <label class="switch-item">
                             <span>Slepá mapa</span>
-                            <input type="checkbox" id="toggle-blind-cb">
+                            <input type="checkbox" id="toggle-blind-cb" role="switch">
                             <span class="slider"></span>
                         </label>
                         <label class="switch-item">
                             <span>Světlý mód</span>
-                            <input type="checkbox" id="toggle-light-cb">
+                            <input type="checkbox" id="toggle-light-cb" role="switch">
                             <span class="slider"></span>
                         </label>
                         <label class="switch-item">
                             <span>Zobrazit vše</span>
-                            <input type="checkbox" id="toggle-all-cb">
+                            <input type="checkbox" id="toggle-all-cb" role="switch">
                             <span class="slider"></span>
                         </label>
                     </div>
                 </div>
                 <button id="show-terms" class="secondary-btn">Seznam pojmů</button>
-                <div class="game-stats">
-                    <div class="stat-item">Skóre: <span id="score">0</span></div>
+                <div class="game-stats" aria-label="Herní statistiky">
+                    <div class="stat-item">Skóre: <span id="score" aria-live="polite">0</span></div>
                     <div class="stat-item">Kolo: <span id="total-questions">0</span></div>
                 </div>
             </div>

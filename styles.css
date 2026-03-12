@@ -39,13 +39,18 @@ body {
 }
 
 header {
-    background: rgba(15, 23, 42, 0.9);
+    background: var(--bg-dark); /* Use variable for theme adaptation */
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
     z-index: 1000;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.light-theme header {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -77,20 +82,28 @@ header {
 }
 
 .secondary-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: var(--text);
-    padding: 0.6rem 1.2rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    padding: 0.8rem 1.5rem;
+    min-height: 48px;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
     transition: all 0.2s;
+}
+
+.light-theme .secondary-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    color: #1e293b;
 }
 
 .secondary-btn:hover,
 .secondary-btn.active {
     background: var(--primary);
-    color: var(--bg-dark);
+    color: #000;
+    border-color: var(--primary);
 }
 
 main {
@@ -131,33 +144,43 @@ main {
     margin-bottom: 1.5rem;
 }
 
+.light-theme #mode-selector {
+    background: rgba(0, 0, 0, 0.05);
+}
+
 .mode-btn {
     flex: 1;
     background: transparent;
-    border: none;
-    color: var(--text);
-    padding: 0.5rem;
+    border: 2px solid transparent;
+    color: var(--text); /* Use theme text color */
+    padding: 0.8rem 0.5rem;
+    min-height: 44px;
     cursor: pointer;
     border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 700;
     transition: all 0.2s;
-    opacity: 0.6;
+    opacity: 0.8;
 }
 
 .mode-btn.active {
     background: var(--primary);
-    color: var(--bg-dark);
+    color: #000;
     opacity: 1;
+    border-bottom: 4px solid var(--secondary); /* Visual indicator besides color */
+    transform: translateY(-2px);
 }
 
 #question-panel h2 {
-    font-size: 1.8rem;
+    font-size: 2rem;
     margin-bottom: 0.5rem;
-    background: linear-gradient(to right, #fff, var(--primary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.light-theme #question-panel h2 {
+    text-shadow: none;
+    color: #1e293b;
 }
 
 #sub-text {
@@ -270,14 +293,19 @@ main {
 }
 
 #user-info {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1rem;
     color: var(--text);
-    opacity: 0.9;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 0.5rem 1rem;
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1.2rem;
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-theme #user-info {
+    background: rgba(0, 0, 0, 0.05);
+    border: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 #user-info span {
@@ -345,8 +373,10 @@ main {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.8rem 0; /* Increase spacing */
+    min-height: 44px;
 }
 
 /* Toggle Switch Styling */
@@ -569,6 +599,46 @@ input:checked+.slider:before {
 }
 
 .creator-credit span {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+/* Light Theme Overrides for Components */
+.light-theme .modal-header,
+.light-theme #terms-overlay,
+.light-theme #identify-options,
+.light-theme .dropdown-content,
+.light-theme #game-overlay {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    color: #1e293b;
+}
+
+.light-theme .term-item,
+.light-theme .option-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.08);
+    color: #1e293b;
+}
+
+.light-theme .term-item:hover,
+.light-theme .option-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-color: var(--primary);
+}
+
+.light-theme .close-btn,
+.light-theme #sub-text,
+.light-theme .term-category h3 {
+    color: #1e293b;
+}
+
+.light-theme .slider {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.light-theme .stat-item {
     color: var(--primary);
     font-weight: 800;
 }
