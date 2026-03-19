@@ -204,7 +204,9 @@ class GeoGame {
         this.currentMode = 'find';
         this.score = 0;
         this.questionsCount = 0;
-        this.currentTarget = null;
+        this.pointsAchieved = 0;
+        this.maxPossiblePoints = 0;
+        this.questionPool = [];
         this.activeShape = null; // New: tracking polygon shapes
         this.marker = null;
         this.allMarkersGroup = null;
@@ -217,8 +219,17 @@ class GeoGame {
     }
 
     initApp() {
+        const areaTypes = ["Pohoří", "Nížiny", "Pouště", "Ostrovy", "Poloostrovy"];
         geoData.forEach(item => {
             if (item.active === undefined) item.active = true;
+            if (item.name === "Ural" && !item.shape) {
+                item.shape = [[68, 58], [68, 62], [52, 62], [52, 58]];
+            } else if (areaTypes.includes(item.type) && !item.shape && item.coords) {
+                const [lat, lng] = item.coords;
+                const latOff = 1.5;
+                const lngOff = 2.0;
+                item.shape = [[lat+latOff, lng-lngOff], [lat+latOff, lng+lngOff], [lat-latOff, lng+lngOff], [lat-latOff, lng-lngOff]];
+            }
         });
         this.initUI();
         this.initMap();
@@ -312,8 +323,29 @@ class GeoGame {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
-                this.currentMode = e.target.dataset.mode;
-                this.resetGame();
+                const newMode = e.target.dataset.mode;
+                
+                if (this.currentMode !== newMode) {
+                    this.currentMode = newMode;
+                    // Hot-swap mid-game without resetting stats or ending the session
+                    if (document.getElementById('start-game').classList.contains('hidden') && this.currentTarget) {
+                        if (this.marker) this.map.removeLayer(this.marker);
+                        if (this.activeShape) this.map.removeLayer(this.activeShape);
+                        this.activeShape = null;
+                        
+                        document.getElementById('identify-options').classList.add('hidden');
+                        document.getElementById('type-in-container').classList.add('hidden');
+                        
+                        if (this.currentMode === 'find') {
+                            document.getElementById('question-text').textContent = `Najdi: ${this.currentTarget.name}`;
+                            document.getElementById('sub-text').textContent = `Typ: ${this.currentTarget.type}`;
+                        } else if (this.currentMode === 'identify') {
+                            this.setupIdentifyMode();
+                        } else if (this.currentMode === 'typein') {
+                            this.setupTypeinMode();
+                        }
+                    }
+                }
             });
         });
 
@@ -347,28 +379,53 @@ class GeoGame {
             grid.className = 'term-grid';
 
             categories[cat].sort((a, b) => a.name.localeCompare(b.name, 'cs')).forEach(item => {
-                const termLabel = document.createElement('label');
-                termLabel.className = `term-item ${item.active ? '' : 'inactive'}`;
+                const termContainer = document.createElement('div');
+                termContainer.className = `term-item ${item.active ? '' : 'inactive'}`;
 
                 const textSpan = document.createElement('span');
                 textSpan.textContent = item.name;
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.style.display = 'flex';
+                actionsDiv.style.gap = '10px';
+                actionsDiv.style.alignItems = 'center';
+
+                const locateBtn = document.createElement('button');
+                locateBtn.innerHTML = '📍';
+                locateBtn.className = 'locate-btn';
+                locateBtn.title = 'Zvýraznit na mapě';
+                locateBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.locateTermOnMap(item);
+                });
+
+                const termLabel = document.createElement('label');
+                termLabel.style.display = 'flex';
+                termLabel.style.alignItems = 'center';
+                termLabel.style.margin = '0';
+                termLabel.style.cursor = 'pointer';
 
                 const cb = document.createElement('input');
                 cb.type = 'checkbox';
                 cb.checked = item.active;
                 cb.addEventListener('change', (e) => {
                     item.active = e.target.checked;
-                    termLabel.className = `term-item ${item.active ? '' : 'inactive'}`;
+                    termContainer.className = `term-item ${item.active ? '' : 'inactive'}`;
                     this.refreshMapIfShowingAll();
                 });
 
                 const slider = document.createElement('span');
                 slider.className = 'slider';
 
-                termLabel.appendChild(textSpan);
                 termLabel.appendChild(cb);
                 termLabel.appendChild(slider);
-                grid.appendChild(termLabel);
+
+                actionsDiv.appendChild(locateBtn);
+                actionsDiv.appendChild(termLabel);
+
+                termContainer.appendChild(textSpan);
+                termContainer.appendChild(actionsDiv);
+                grid.appendChild(termContainer);
             });
 
             div.appendChild(grid);
@@ -396,6 +453,23 @@ class GeoGame {
         }
     }
 
+    locateTermOnMap(item) {
+        this.hideTermsList();
+        
+        if (this.marker) this.map.removeLayer(this.marker);
+        if (this.activeShape) this.map.removeLayer(this.activeShape);
+        
+        if (item.shape) {
+            this.activeShape = L.polygon(item.shape, { color: '#f39c12', fillOpacity: 0.6, weight: 3 }).addTo(this.map);
+            this.activeShape.bindTooltip(item.name, { permanent: true, direction: 'center', className: 'marker-label' });
+            this.map.fitBounds(this.activeShape.getBounds(), {padding: [50, 50], maxZoom: 5});
+        } else {
+            this.marker = L.circleMarker(item.coords, { color: '#f39c12', radius: 10, fillOpacity: 0.8 }).addTo(this.map);
+            this.marker.bindTooltip(item.name, { permanent: true, direction: 'right', className: 'marker-label' });
+            this.map.setView(item.coords, 5);
+        }
+    }
+
     toggleBlindMap(active) {
         this.blindMode = active;
         this.updateMapLayer();
@@ -411,7 +485,9 @@ class GeoGame {
 
     updateMapLayer() {
         // Remove all layers first
-        Object.values(this.layers).forEach(layer => this.map.removeLayer(layer));
+        if (this.layers) {
+            Object.values(this.layers).forEach(layer => this.map.removeLayer(layer));
+        }
 
         let currentLayer;
         if (this.lightMode) {
@@ -451,53 +527,68 @@ class GeoGame {
         }
     }
 
+    refillPool() {
+        const activeTerms = geoData.filter(d => d.active);
+        if (activeTerms.length === 0) return false;
+        this.questionPool = activeTerms.sort(() => 0.5 - Math.random());
+        return true;
+    }
+
+    resetStats() {
+        this.score = 0;
+        this.questionsCount = 0;
+        this.pointsAchieved = 0;
+        this.maxPossiblePoints = 0;
+        this.questionPool = [];
+        this.updateStats();
+    }
+
     updateStats() {
         document.getElementById('score').textContent = this.score;
         document.getElementById('total-questions').textContent = this.questionsCount;
+        let pct = this.maxPossiblePoints === 0 ? 0 : Math.round((this.pointsAchieved / this.maxPossiblePoints) * 100);
+        const rateEl = document.getElementById('success-rate');
+        if (rateEl) rateEl.textContent = `${pct}%`;
     }
 
     resetGame() {
-        this.score = 0; this.questionsCount = 0; this.currentTarget = null;
+        this.resetStats();
+        this.currentTarget = null;
         if (this.marker) this.map.removeLayer(this.marker);
         if (this.activeShape) this.map.removeLayer(this.activeShape);
         this.activeShape = null;
-        this.updateStats();
         document.getElementById('start-game').classList.remove('hidden');
         document.getElementById('identify-options').classList.add('hidden');
         document.getElementById('type-in-container').classList.add('hidden');
         document.getElementById('feedback-panel').classList.add('hidden');
     }
 
-    startNewGame() { this.score = 0; this.questionsCount = 0; document.getElementById('start-game').classList.add('hidden'); this.nextQuestion(); }
+    startNewGame() {
+        this.resetStats();
+        document.getElementById('start-game').classList.add('hidden');
+        this.nextQuestion();
+    }
 
     nextQuestion() {
         this.questionsCount++;
         this.updateStats();
         
-        let activeTerms = geoData.filter(d => d.active);
-        
-        if (activeTerms.length === 0) {
-            this.showFeedback("Vše je vypnuté!", "wrong");
-            this.resetGame();
-            return;
+        if (!this.questionPool || this.questionPool.length === 0) {
+            if (!this.refillPool()) {
+                this.showFeedback("Vše je vypnuté!", "wrong");
+                this.resetGame();
+                return;
+            }
         }
 
-        let available = activeTerms.filter(d => !this.lastTargets.includes(d.name));
-        
-        if (available.length === 0) {
-            this.lastTargets = [];
-            available = activeTerms;
-        }
+        this.currentTarget = this.questionPool.pop();
 
-        this.currentTarget = available[Math.floor(Math.random() * available.length)];
-        this.lastTargets.push(this.currentTarget.name);
-        if (this.lastTargets.length > 5) this.lastTargets.shift();
-        document.getElementById('identify-options').classList.add('hidden');
-        document.getElementById('type-in-container').classList.add('hidden');
-        document.getElementById('question-panel').classList.remove('hidden');
         if (this.marker) this.map.removeLayer(this.marker);
         if (this.activeShape) this.map.removeLayer(this.activeShape);
         this.activeShape = null;
+        document.getElementById('identify-options').classList.add('hidden');
+        document.getElementById('type-in-container').classList.add('hidden');
+        document.getElementById('question-panel').classList.remove('hidden');
 
         if (this.currentMode === 'find') {
             document.getElementById('question-text').textContent = `Najdi: ${this.currentTarget.name}`;
@@ -550,8 +641,19 @@ class GeoGame {
         const input = document.getElementById('name-input').value.trim().toLowerCase();
         const correct = this.currentTarget.name.toLowerCase();
         const normalize = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        if (normalize(input) === normalize(correct)) this.handleCorrect();
-        else this.handleWrong();
+        
+        this.maxPossiblePoints += 10;
+        if (normalize(input) === normalize(correct)) {
+            this.handleCorrect();
+            this.pointsAchieved += 10;
+        } else {
+            this.handleWrong();
+            if (this.currentTarget.shape) {
+                this.map.fitBounds(L.polygon(this.currentTarget.shape).getBounds(), {padding: [50, 50], maxZoom: 5});
+            } else {
+                this.map.panTo(this.currentTarget.coords);
+            }
+        }
         setTimeout(() => this.nextQuestion(), 1500);
     }
 
@@ -564,37 +666,67 @@ class GeoGame {
 
     handleMapClick(e) {
         if (this.currentMode !== 'find' || !this.currentTarget) return;
+        if (document.getElementById('feedback-panel').classList.contains('active')) return;
+
         const { lat, lng } = e.latlng;
         let isCorrect = false;
+        let isPartial = false;
 
         if (this.currentTarget.shape) {
-            isCorrect = this.pointInPolygon([lat, lng], this.currentTarget.shape);
+            if (this.pointInPolygon([lat, lng], this.currentTarget.shape)) {
+                isCorrect = true;
+            } else {
+                let targetLatLng = this.currentTarget.coords ? L.latLng(this.currentTarget.coords[0], this.currentTarget.coords[1]) : L.latLng(this.currentTarget.shape[0][0], this.currentTarget.shape[0][1]);
+                if (e.latlng.distanceTo(targetLatLng) < 800000) isPartial = true;
+            }
         } else {
             const [targetLat, targetLng] = this.currentTarget.coords;
             const threshold = 12 / Math.pow(1.5, this.map.getZoom());
             const dist = Math.sqrt(Math.pow(lat - targetLat, 2) + Math.pow(lng - targetLng, 2));
-            isCorrect = dist < threshold;
+            const exactDist = e.latlng.distanceTo(L.latLng(targetLat, targetLng));
+            
+            if (dist < threshold || exactDist < 300000) {
+                isCorrect = true;
+            } else if (exactDist < 900000) {
+                isPartial = true;
+            }
         }
+
+        this.maxPossiblePoints += 10;
 
         if (isCorrect) {
             this.handleCorrect();
+            this.pointsAchieved += 10;
             if (this.currentTarget.shape) {
                 this.activeShape = L.polygon(this.currentTarget.shape, { color: '#10b981', fillOpacity: 0.6 }).addTo(this.map);
             } else {
                 this.marker = L.circleMarker(this.currentTarget.coords, { color: '#10b981', radius: 10 }).addTo(this.map);
             }
+        } else if (isPartial) {
+            this.score += 5;
+            this.pointsAchieved += 5;
+            this.showFeedback('Těsně vedle!', 'partial');
+            this.updateStats();
+            if (this.currentTarget.shape) {
+                this.activeShape = L.polygon(this.currentTarget.shape, { color: '#f97316', fillOpacity: 0.6 }).addTo(this.map);
+                this.map.fitBounds(this.activeShape.getBounds(), {padding: [50, 50], maxZoom: 5});
+            } else {
+                this.marker = L.circleMarker(this.currentTarget.coords, { color: '#f97316', radius: 10 }).addTo(this.map);
+                this.map.panTo(this.currentTarget.coords);
+            }
         } else {
             this.handleWrong();
             if (this.currentTarget.shape) {
-                this.activeShape = L.polygon(this.currentTarget.shape, { color: '#f43f5e', fillOpacity: 0.6 }).addTo(this.map);
+                this.activeShape = L.polygon(this.currentTarget.shape, { color: '#ef4444', fillOpacity: 0.6 }).addTo(this.map);
+                this.map.fitBounds(this.activeShape.getBounds(), {padding: [50, 50], maxZoom: 5});
             } else {
-                this.marker = L.circleMarker(this.currentTarget.coords, { color: '#f43f5e', radius: 10 }).addTo(this.map);
+                this.marker = L.circleMarker(this.currentTarget.coords, { color: '#ef4444', radius: 10 }).addTo(this.map);
+                this.map.panTo(this.currentTarget.coords);
             }
         }
         setTimeout(() => this.nextQuestion(), 1500);
     }
 
-    // Ray-casting algorithm for point-in-polygon
     pointInPolygon(point, vs) {
         const x = point[0], y = point[1];
         let inside = false;
@@ -609,8 +741,18 @@ class GeoGame {
     }
 
     checkIdentifyAnswer(selected) {
-        if (selected.name === this.currentTarget.name) this.handleCorrect();
-        else this.handleWrong();
+        this.maxPossiblePoints += 10;
+        if (selected.name === this.currentTarget.name) {
+            this.handleCorrect();
+            this.pointsAchieved += 10;
+        } else {
+            this.handleWrong();
+            if (this.currentTarget.shape) {
+                this.map.fitBounds(L.polygon(this.currentTarget.shape).getBounds(), {padding: [50, 50], maxZoom: 5});
+            } else {
+                this.map.panTo(this.currentTarget.coords);
+            }
+        }
         setTimeout(() => this.nextQuestion(), 1500);
     }
 
@@ -620,7 +762,10 @@ class GeoGame {
         this.updateStats();
     }
 
-    handleWrong() { this.showFeedback(`Špatně! Je to: ${this.currentTarget.name}`, "wrong"); }
+    handleWrong() { 
+        this.showFeedback(`Špatně! Je to: ${this.currentTarget.name}`, "wrong");
+        this.updateStats();
+    }
 
     showFeedback(text, type) {
         const panel = document.getElementById('feedback-panel');
