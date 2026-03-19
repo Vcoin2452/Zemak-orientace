@@ -81,7 +81,11 @@
             <div id="terms-overlay" class="hidden glass">
                 <div class="modal-header">
                     <h2>Seznam všech pojmů</h2>
-                    <button id="close-terms" class="close-btn">&times;</button>
+                    <button id="close-terms" class="close-btn" aria-label="Zavřít">&times;</button>
+                </div>
+                <div class="terms-actions">
+                    <button id="select-all-terms" class="secondary-btn small">Vybrat vše</button>
+                    <button id="deselect-all-terms" class="secondary-btn small">Zrušit výběr</button>
                 </div>
                 <div id="terms-content">
                     <!-- Categories and terms will be injected here -->

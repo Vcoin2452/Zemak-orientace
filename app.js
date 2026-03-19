@@ -217,6 +217,9 @@ class GeoGame {
     }
 
     initApp() {
+        geoData.forEach(item => {
+            if (item.active === undefined) item.active = true;
+        });
         this.initUI();
         this.initMap();
         this.attachGameListeners();
@@ -316,6 +319,8 @@ class GeoGame {
 
         document.getElementById('show-terms').addEventListener('click', () => this.showTermsList());
         document.getElementById('close-terms').addEventListener('click', () => this.hideTermsList());
+        document.getElementById('select-all-terms').addEventListener('click', () => this.toggleAllTerms(true));
+        document.getElementById('deselect-all-terms').addEventListener('click', () => this.toggleAllTerms(false));
         document.getElementById('terms-overlay').addEventListener('click', (e) => {
             if (e.target.id === 'terms-overlay') this.hideTermsList();
         });
@@ -325,7 +330,7 @@ class GeoGame {
         const categories = {};
         geoData.forEach(item => {
             if (!categories[item.type]) categories[item.type] = [];
-            categories[item.type].push(item.name);
+            categories[item.type].push(item);
         });
 
         const content = document.getElementById('terms-content');
@@ -334,12 +339,42 @@ class GeoGame {
         Object.keys(categories).sort().forEach(cat => {
             const div = document.createElement('div');
             div.className = 'term-category';
-            div.innerHTML = `
-                <h3>${cat}</h3>
-                <div class="term-grid">
-                    ${categories[cat].sort((a, b) => a.localeCompare(b, 'cs')).map(term => `<div class="term-item">${term}</div>`).join('')}
-                </div>
-            `;
+            const h3 = document.createElement('h3');
+            h3.textContent = cat;
+            div.appendChild(h3);
+
+            const grid = document.createElement('div');
+            grid.className = 'term-grid';
+
+            categories[cat].sort((a, b) => a.name.localeCompare(b.name, 'cs')).forEach(item => {
+                const termDiv = document.createElement('div');
+                termDiv.className = `term-item ${item.active ? '' : 'inactive'}`;
+
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = item.active;
+                cb.addEventListener('change', (e) => {
+                    item.active = e.target.checked;
+                    termDiv.className = `term-item ${item.active ? '' : 'inactive'}`;
+                    this.refreshMapIfShowingAll();
+                });
+
+                const label = document.createElement('span');
+                label.textContent = item.name;
+
+                termDiv.addEventListener('click', (e) => {
+                    if (e.target !== cb) {
+                        cb.checked = !cb.checked;
+                        cb.dispatchEvent(new Event('change'));
+                    }
+                });
+
+                termDiv.appendChild(cb);
+                termDiv.appendChild(label);
+                grid.appendChild(termDiv);
+            });
+
+            div.appendChild(grid);
             content.appendChild(div);
         });
 
@@ -350,6 +385,18 @@ class GeoGame {
     hideTermsList() {
         document.getElementById('terms-overlay').classList.add('hidden');
         document.getElementById('show-terms').focus();
+    }
+
+    toggleAllTerms(active) {
+        geoData.forEach(item => item.active = active);
+        this.showTermsList(); // Re-render to update checkboxes
+        this.refreshMapIfShowingAll();
+    }
+
+    refreshMapIfShowingAll() {
+        if (this.showingAll) {
+            this.toggleAllMarkers(true);
+        }
     }
 
     toggleBlindMap(active) {
@@ -390,6 +437,7 @@ class GeoGame {
         if (this.showingAll) {
             this.allMarkersGroup.clearLayers();
             geoData.forEach(item => {
+                if (!item.active) return;
                 if (item.shape) {
                     const poly = L.polygon(item.shape, { color: '#00d2ff', fillOpacity: 0.3, weight: 2 });
                     poly.bindTooltip(item.name, { permanent: true, direction: 'center', className: 'marker-label' });
@@ -428,7 +476,22 @@ class GeoGame {
     nextQuestion() {
         this.questionsCount++;
         this.updateStats();
-        let available = geoData.filter(d => !this.lastTargets.includes(d.name));
+        
+        let activeTerms = geoData.filter(d => d.active);
+        
+        if (activeTerms.length === 0) {
+            this.showFeedback("Vše je vypnuté!", "wrong");
+            this.resetGame();
+            return;
+        }
+
+        let available = activeTerms.filter(d => !this.lastTargets.includes(d.name));
+        
+        if (available.length === 0) {
+            this.lastTargets = [];
+            available = activeTerms;
+        }
+
         this.currentTarget = available[Math.floor(Math.random() * available.length)];
         this.lastTargets.push(this.currentTarget.name);
         if (this.lastTargets.length > 5) this.lastTargets.shift();
@@ -496,7 +559,7 @@ class GeoGame {
     }
 
     generateOptions(correct) {
-        let others = geoData.filter(d => d.name !== correct.name);
+        let others = geoData.filter(d => d.active && d.name !== correct.name);
         others = others.sort(() => 0.5 - Math.random()).slice(0, 3);
         const all = [correct, ...others];
         return all.sort(() => 0.5 - Math.random());
