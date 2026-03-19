@@ -347,31 +347,28 @@ class GeoGame {
             grid.className = 'term-grid';
 
             categories[cat].sort((a, b) => a.name.localeCompare(b.name, 'cs')).forEach(item => {
-                const termDiv = document.createElement('div');
-                termDiv.className = `term-item ${item.active ? '' : 'inactive'}`;
+                const termLabel = document.createElement('label');
+                termLabel.className = `term-item ${item.active ? '' : 'inactive'}`;
+
+                const textSpan = document.createElement('span');
+                textSpan.textContent = item.name;
 
                 const cb = document.createElement('input');
                 cb.type = 'checkbox';
                 cb.checked = item.active;
                 cb.addEventListener('change', (e) => {
                     item.active = e.target.checked;
-                    termDiv.className = `term-item ${item.active ? '' : 'inactive'}`;
+                    termLabel.className = `term-item ${item.active ? '' : 'inactive'}`;
                     this.refreshMapIfShowingAll();
                 });
 
-                const label = document.createElement('span');
-                label.textContent = item.name;
+                const slider = document.createElement('span');
+                slider.className = 'slider';
 
-                termDiv.addEventListener('click', (e) => {
-                    if (e.target !== cb) {
-                        cb.checked = !cb.checked;
-                        cb.dispatchEvent(new Event('change'));
-                    }
-                });
-
-                termDiv.appendChild(cb);
-                termDiv.appendChild(label);
-                grid.appendChild(termDiv);
+                termLabel.appendChild(textSpan);
+                termLabel.appendChild(cb);
+                termLabel.appendChild(slider);
+                grid.appendChild(termLabel);
             });
 
             div.appendChild(grid);
